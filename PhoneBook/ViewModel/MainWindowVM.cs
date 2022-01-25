@@ -3,54 +3,145 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PhoneBook.ViewModel
 {
     public class MainWindowVM : ViewModelBase
     {
-        private IList<Contact> _contactsList;
+        public IList<Contact> _contactsList = new List<Contact>();
 
-       
+        public Contact c = new Contact();
 
+        public RelayCommand ConnectCommand { get; set; }
         public RelayCommand UpdateCommand { get; set; }
         public RelayCommand AddCommand { get; set; }
         public RelayCommand RefreshCommand { get; set; }
 
+        private string connectionString;
+        private SqlConnection conn;
+        private SqlCommand cmd_fill;
+        
+
 
         public MainWindowVM()
         {
-            _contactsList = new List<Contact>
+
+            //for connection
+            connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
+            conn = new SqlConnection(connectionString);
+
+            conn.Open();
+            cmd_fill = new SqlCommand("SELECT * FROM Contacts", conn);
+            //SqlDataReader dr = cmd_fill.ExecuteReader();
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd_fill);
+            DataSet ds = new DataSet();
+            adapter.Fill(ds, "Contacts");
+
+            try
             {
-                new Contact{UserId=1,FirstName="Bryant",MiddleName="Kyle",LastName="Sagun",Gender="Male",Mobile="09083483552"},
-                new Contact{UserId=2,FirstName="Gian",MiddleName="Carlo",LastName="Genisera",Gender="Male",Mobile="09083483552"},
-                new Contact{UserId=3,FirstName="Alaica",MiddleName="Dela Banda",LastName="Marino",Gender="Female",Mobile="09083483552"},
-            };
+                if (_contactsList != null)
+                {
+                    foreach (DataRow dataRow in ds.Tables[0].Rows)
+                    {
+                        _contactsList.Add(new Contact
+                        {
+                            UserId = (int) dataRow["UserId"],
+                            FirstName = dataRow["FirstName"].ToString(),
+                            MiddleName = dataRow["MiddleName"].ToString(),
+                            LastName = dataRow["LastName"].ToString(),
+                            Gender = dataRow["Gender"].ToString(),
+                            Mobile = dataRow["Mobile"].ToString()
 
+                        });
+                    }
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                adapter.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+            
+      
 
-
-            AddCommand = new RelayCommand(AddMethod);
+            //list of commands 
+           
+            AddCommand = new RelayCommand(AddMethod, CanSave=>true);
             UpdateCommand = new RelayCommand(UpdateMethod);
             RefreshCommand = new RelayCommand(RefreshMethod);
+
         }
 
+        
         public IList<Contact> Contacts
         {
             get { return _contactsList; }
             set { _contactsList = value; }
         }
 
-        
+        public bool CanSave
+        {
+            get { return !string.IsNullOrEmpty(c.UserId.ToString()) && !string.IsNullOrEmpty(c.FirstName); }
+        }
 
+        
         public void AddMethod(object message)
         {
-            Contact c = new Contact();
-            _contactsList.Add(new Contact { UserId=4, FirstName = c.FirstName, MiddleName = c.MiddleName, LastName = c.LastName, Gender = c.Gender, Mobile = c.Mobile });
-            MessageBox.Show("A contact has been added!","Phonebook", MessageBoxButton.OK, MessageBoxImage.Information,MessageBoxResult.OK);
+
+
+            //Contact c = new Contact();
+            // _contactsList.Add(new Contact { UserId=4, FirstName = c.FirstName, MiddleName = c.MiddleName, LastName = c.LastName, Gender = c.Gender, Mobile = c.Mobile });
+            //Contact contact = new Contact();
+
+            //MessageBox.Show("A contact has been added!", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            string connectionString;
+            SqlConnection conn;
+            connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
+            conn = new SqlConnection(connectionString);
+
+
+            SqlCommand cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO " +
+                                "Contacts (FirstName, MiddleName, LastName, Gender, Mobile)" +
+                                "VALUES (@FirstName, @MiddleName, @LastName, @Gender, @Mobile)";
+            cmd.Parameters.AddWithValue("@FirstName", c.FirstName);
+            cmd.Parameters.AddWithValue("@MiddleName", c.MiddleName);
+            cmd.Parameters.AddWithValue("@LastName", c.LastName);
+            cmd.Parameters.AddWithValue("@Gender", c.Gender);
+            cmd.Parameters.AddWithValue("@Mobile", c.Mobile);
+
+
+
+            try
+            {
+                conn.Open();
+                //MessageBox.Show("Connected");
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Data saved successfully");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Data not added");
+            }
+            finally
+            {
+                conn.Close();
+            }
+
         }
 
         public void UpdateMethod(object message)
@@ -58,12 +149,19 @@ namespace PhoneBook.ViewModel
             MessageBox.Show("A contact has been updated!", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
         }
 
+       
+        
         public void RefreshMethod(object message)
         {
+
+            //(message as TextBox).Text = string.Empty;
             /*Contact c = new Contact();
             c.FirstName = "test";
             c.MiddleName = "test";
             c.LastName = "test";*/
+
+           
+
             
         }
 

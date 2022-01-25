@@ -21,3 +21,7 @@ D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.exe
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.pdb
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\Views\MainWindow.g.cs
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\Views\MainWindow.baml
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.dll
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.SqlServer.dll
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.xml
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.SqlServer.xml

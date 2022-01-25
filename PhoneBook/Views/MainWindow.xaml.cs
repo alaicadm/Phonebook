@@ -26,36 +26,42 @@ namespace PhoneBook
         {
             InitializeComponent();
             DataContext = new MainWindowVM();
+
             
         }
 
         public void refreshOnClick(object sender, EventArgs e)
         {
+            UserList.SelectedItem = null;
             fname.Clear();
             mname.Clear();
             lname.Clear();
-            gender.SelectedIndex=-1;
+            gender.SelectedIndex = -1;
             mobile.Clear();
+            
 
         }
 
-   
-        
 
-       
+
+
+
         public void addOnClick(object sender, EventArgs e)
         {
 
 
-            Contact c = new Contact();
-            c.FirstName = fname.Text;
-            c.MiddleName = mname.Text;
-            c.LastName = lname.Text;
-            c.Gender = gender.Text;
-            c.Mobile= mobile.Text;
-
-
+            Contact contact = new Contact();
+            contact.FirstName = fname.Text;
+            contact.MiddleName = mname.Text;
+            contact.LastName = lname.Text;
+            contact.Gender = gender.Text;
+            contact.Mobile = mobile.Text;
             
+            
+            MessageBox.Show("A contact has been added!", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            
+
+
         }
 
     }

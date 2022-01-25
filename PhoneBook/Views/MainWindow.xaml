@@ -39,7 +39,7 @@
 
 
 
-                <TextBox Grid.Row="0" Text="{Binding ElementName=UserList, Path=SelectedItem.FirstName}"
+                <TextBox Grid.Row="0" Text="{Binding ElementName=UserList, Path=SelectedItem.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                 VerticalAlignment="Top" 
                                 x:Name="fname" 
@@ -49,7 +49,7 @@
                                 VerticalScrollBarVisibility="Auto"
                                 ToolTip="Search for a Contact"
                                 materialDesign:HintAssist.Hint="First Name" />
-                <TextBox Grid.Row="1" Text="{Binding ElementName=UserList,Path=SelectedItem.MiddleName}"
+                <TextBox Grid.Row="1" Text="{Binding ElementName=UserList,Path=SelectedItem.MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         VerticalAlignment="Top" x:Name="mname"
                         Height="50"
@@ -58,7 +58,7 @@
                         VerticalScrollBarVisibility="Auto"
                         ToolTip="Search for a Contact"
                         materialDesign:HintAssist.Hint="Middle Name" />
-                <TextBox Grid.Row="2" Text="{Binding ElementName=UserList,Path=SelectedItem.LastName}"
+                <TextBox Grid.Row="2" Text="{Binding ElementName=UserList,Path=SelectedItem.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         VerticalAlignment="Top" x:Name="lname"
                         Height="50"
@@ -67,19 +67,19 @@
                         VerticalScrollBarVisibility="Auto"
                         ToolTip="Search for a Contact"
                         materialDesign:HintAssist.Hint="Last Name" />
-                <ComboBox Grid.Row="3"  VerticalAlignment="Top" Text="{Binding ElementName=UserList,Path=SelectedItem.Gender}"
+                <ComboBox Grid.Row="3"  VerticalAlignment="Top" Text="{Binding ElementName=UserList,Path=SelectedItem.Gender,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         x:Name="gender"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}"
                         IsEnabled="{Binding Path=IsChecked, ElementName=gender}"
                         materialDesign:HintAssist.Hint="Gender"
                         ItemsSource="{Binding Gender}"
                         Width="Auto" Height="50">
-                    <ComboBoxItem Name="Male" >Male</ComboBoxItem>
-                    <ComboBoxItem Name="Female">Female</ComboBoxItem>
+                    <ComboBoxItem Name="male" >male</ComboBoxItem>
+                    <ComboBoxItem Name="female">female</ComboBoxItem>
                    
                 </ComboBox>
 
-                <TextBox Grid.Row="4" Text="{Binding ElementName=UserList,Path=SelectedItem.Mobile}"
+                <TextBox Grid.Row="4" Text="{Binding ElementName=UserList,Path=SelectedItem.Mobile,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         VerticalAlignment="Top" x:Name="mobile"
                         Height="50" 
@@ -101,7 +101,7 @@
 
                         <Button Margin="10,0,0,0" Grid.Column="0" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="50"
                         materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Add Contact"  HorizontalAlignment="Center"
-                        Command="{Binding Path=AddCommand}" Click="addOnClick"
+                        Command="{Binding AddCommand}"
                         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                             <materialDesign:PackIcon Kind="AccountPlusOutline" />
                         </Button>
@@ -121,7 +121,7 @@
 
                         <Button Margin="10,0,0,0" Grid.Column="3" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="50"
                         materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Refresh Fields"  HorizontalAlignment="Center" 
-                         Command="{Binding Path=RefreshCommand}" Click="refreshOnClick"
+                         Click="refreshOnClick"
                         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                             <materialDesign:PackIcon Kind="Refresh" />
                         </Button>
@@ -174,7 +174,7 @@
                             <materialDesign:PackIcon Kind="AccountSearchOutline" />
                         </Button>
                         <Button Margin="10,0,0,0" Grid.Column="2" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="Auto"
-                        materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Refresh List" Command="{Binding AddContactCommand}" 
+                        materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Refresh List" Command="{Binding ConnectCommand}" 
                         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}">
                             <materialDesign:PackIcon Kind="Refresh" />
                         </Button>
