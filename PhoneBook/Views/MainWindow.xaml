@@ -48,7 +48,7 @@
                                 TextWrapping="Wrap"
                                 materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
                                 VerticalScrollBarVisibility="Auto"
-                                ToolTip="Search for a Contact"
+                                ToolTip="Enter First Name"
                                 materialDesign:HintAssist.Hint="First Name" >
                     <TextBox.DataContext>
                         <Models:Contact/>
@@ -61,7 +61,7 @@
                         TextWrapping="Wrap"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
                         VerticalScrollBarVisibility="Auto"
-                        ToolTip="Search for a Contact"
+                        ToolTip="Enter Middle Name"
                         materialDesign:HintAssist.Hint="Middle Name" />
                 <TextBox Grid.Row="2" Text="{Binding SelectedItem.LastName, ElementName=UserList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -70,10 +70,10 @@
                         TextWrapping="Wrap"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
                         VerticalScrollBarVisibility="Auto"
-                        ToolTip="Search for a Contact"
+                        ToolTip="Enter Last Name"
                         materialDesign:HintAssist.Hint="Last Name" />
                 <ComboBox Grid.Row="3"  VerticalAlignment="Top" Text="{Binding SelectedItem.Gender, ElementName=UserList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        x:Name="gender"
+                        x:Name="gender" ToolTip="Select Gender"
                         Style="{StaticResource MaterialDesignOutlinedComboBox}"
                         IsEnabled="{Binding IsChecked, ElementName=gender}"
                         materialDesign:HintAssist.Hint="Gender"
@@ -91,7 +91,7 @@
                         TextWrapping="Wrap"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
                         VerticalScrollBarVisibility="Auto"
-                        ToolTip="Search for a Contact"
+                        ToolTip="Enter Mobile Number"
                         materialDesign:HintAssist.Hint="Mobile" />
 
                 <StackPanel Grid.Row="5" HorizontalAlignment="Center" >
@@ -159,26 +159,22 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="120" />
-                            <ColumnDefinition Width="120" />
+                           
 
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0"
                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
                         VerticalAlignment="Top"
-                        Height="50"
+                        Height="50" Name="searchContact" TextChanged="searchContact_txtChanged"
                         TextWrapping="Wrap"
                         materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
                         VerticalScrollBarVisibility="Auto"
                         ToolTip="Search for a Contact"
                         materialDesign:HintAssist.Hint="Search Contact" />
 
+                        
                         <Button Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="Auto"
-                        materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Search Contact" Command="{Binding AddContactCommand}"
-                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
-                            <materialDesign:PackIcon Kind="AccountSearchOutline" />
-                        </Button>
-                        <Button Margin="10,0,0,0" Grid.Column="2" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="Auto"
                         materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Refresh List" Click="refreshList" 
                         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
                             <materialDesign:PackIcon Kind="Refresh" />

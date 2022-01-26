@@ -32,13 +32,32 @@ namespace PhoneBook
             InitializeComponent();
             DataContext = new MainWindowVM();
             connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
+            view.Filter = ContactFilter;
+        }
+        private bool ContactFilter(object item) //filters contact
+        {
+            if (String.IsNullOrEmpty(searchContact.Text)) { return true; }
+            else { 
+                return ((item as Contact).FirstName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).MiddleName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).LastName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).Mobile.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).Gender.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    );
+            }
         }
 
-        public void refreshList(object sender, EventArgs e)
+        private void searchContact_txtChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(UserList.ItemsSource).Refresh();
+        }
+
+        public void refreshList(object sender, EventArgs e) //currently not working
         {
             try
             {
-                ICollectionView view = CollectionViewSource.GetDefaultView(UserList.ItemsSource);
+                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
                 view.Refresh();
             }
             catch(Exception ex)
