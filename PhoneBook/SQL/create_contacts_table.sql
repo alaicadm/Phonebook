@@ -1,0 +1,16 @@
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Contacts' )
+BEGIN
+		CREATE TABLE Contacts
+		(
+			userID INT PRIMARY KEY IDENTITY NOT NULL,
+			firstName NVARCHAR (100),
+			middleName NVARCHAR (100),
+			lastName NVARCHAR (100),
+			gender NVARCHAR (50),
+			mobile NVARCHAR (50),
+		)
+
+END
+
+
