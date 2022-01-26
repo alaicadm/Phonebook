@@ -25,18 +25,13 @@ namespace PhoneBook
     /// </summary>
     public partial class MainWindow : Window
     {
-        //private SqlConnection conn;
         private string connectionString;
-        private SqlCommand cmd_fill;
         public IList<Contact> _contactsList = new List<Contact>();
         public MainWindow()
         {
             InitializeComponent();
             DataContext = new MainWindowVM();
-
             connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
-            //SqlConnection conn = new SqlConnection(connectionString);
-
         }
 
         public void refreshList(object sender, EventArgs e)
@@ -56,57 +51,36 @@ namespace PhoneBook
             }
             
             
-            /*SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
-            cmd_fill = new SqlCommand("SELECT * FROM Contacts", conn);
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd_fill);
-            DataSet ds = new DataSet();
-            adapter.Fill(ds, "Contacts");
-
-            try
-            {
-                if (_contactsList != null)
-                {
-                    foreach (DataRow dataRow in ds.Tables[0].Rows)
-                    {
-                        _contactsList.Add(new Contact
-                        {
-                            UserId = (int)dataRow["UserId"],
-                            FirstName = dataRow["FirstName"].ToString(),
-                            MiddleName = dataRow["MiddleName"].ToString(),
-                            LastName = dataRow["LastName"].ToString(),
-                            Gender = dataRow["Gender"].ToString(),
-                            Mobile = dataRow["Mobile"].ToString()
-
-                        });
-                    }
-
-                }
-                MessageBox.Show("refreshed");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                adapter.Dispose();
-                conn.Close();
-                conn.Dispose();
-            }*/
 
         }
 
-        public bool fieldChecker(object sender, EventArgs e)
+        public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
+        public SqlCommand Command(SqlConnection conn) { return conn.CreateCommand(); }
+
+        public bool fieldChecker(object sender, EventArgs e) //checks if a textbox/combobox is null or not
         {
             bool res = true;
-            if (string.IsNullOrEmpty(fname.Text)) { res = false; }
-            if (string.IsNullOrEmpty(mname.Text)) { res = false; }
-            if (string.IsNullOrEmpty(lname.Text)) { res = false; }
+            TextBox[] textBoxes = { fname, mname, lname, mobile };
+
+            foreach (TextBox i in textBoxes) { if (string.IsNullOrEmpty(i.Text)) { res = false; } }
             if (string.IsNullOrEmpty(gender.Text)) { res = false; }
-            if (string.IsNullOrEmpty(mobile.Text)) { res = false; }
+
             return res;
 
+        }
+        public void execute(SqlConnection conn, SqlCommand cmd, string successMessage, string failedMessage) //execute connection and command
+        {
+            try
+            {
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                MessageBox.Show(successMessage, "SUCCESS", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(failedMessage, "FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
+            }
+            finally { conn.Close(); }
         }
         public void addContact(object sender, EventArgs e)
         {
@@ -115,8 +89,8 @@ namespace PhoneBook
             if (check == true)
             {
 
-                SqlConnection conn = new SqlConnection(connectionString);
-                SqlCommand cmd = conn.CreateCommand();
+                SqlConnection conn = Connect(connectionString);
+                SqlCommand cmd = Command(conn);
                 cmd.CommandText = "INSERT INTO " +
                                     "Contacts (FirstName, MiddleName, LastName, Gender, Mobile)" +
                                     "VALUES (@FirstName, @MiddleName, @LastName, @Gender, @Mobile)";
@@ -126,22 +100,7 @@ namespace PhoneBook
                 cmd.Parameters.AddWithValue("@Gender", gender.Text);
                 cmd.Parameters.AddWithValue("@Mobile", mobile.Text);
 
-                try
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("A contact has been added! Refresh table.", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Data not added");
-                }
-                finally
-                {
-                    conn.Close();
-
-                }
+                execute(conn,cmd, "A contact has been added! Refresh table.","A contact was not added!");
             }
             else
             {
@@ -151,7 +110,7 @@ namespace PhoneBook
                
         }
 
-        public void refreshOnClick(object sender, EventArgs e)
+        public void refreshOnClick(object sender, EventArgs e) //to refresh textboxes and unselect the select item on listview 
         {
             UserList.SelectedItem = null;
             fname.Clear();
@@ -162,10 +121,10 @@ namespace PhoneBook
             
         }
 
-        public void updateContact(object sender, EventArgs e)
+        public void updateContact(object sender, EventArgs e) 
         {
-            SqlConnection conn = new SqlConnection(connectionString);
-            SqlCommand cmd = conn.CreateCommand();
+            SqlConnection conn = Connect(connectionString);
+            SqlCommand cmd = Command(conn);
             var selectedRow = UserList.SelectedItem;
             Contact req = selectedRow as Contact;
             long id = req.UserId;
@@ -176,58 +135,24 @@ namespace PhoneBook
             cmd.Parameters.AddWithValue("@Gender", gender.Text);
             cmd.Parameters.AddWithValue("@Mobile", mobile.Text);
 
-            try
-            {
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("A contact has been updated! Refresh table.", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Data not updated");
-            }
-            finally
-            {
-                conn.Close();
-
-            }
+            bool check = fieldChecker(sender, e);
+            if (check == true) { execute(conn, cmd, "A contact has been updated! Refresh table.", "Contact not updated!"); }
 
         }
 
         public void deleteContact(object sender, EventArgs e)
         {
 
-            SqlConnection conn = new SqlConnection(connectionString);
-            SqlCommand cmd = conn.CreateCommand();
+            SqlConnection conn = Connect(connectionString);
+            SqlCommand cmd = Command(conn);
             var selectedRow = UserList.SelectedItem;
             Contact req = selectedRow as Contact;
             long id = req.UserId;
             cmd.CommandText = $"DELETE FROM Contacts WHERE userId = {id}";
-           
-            try
-            {
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("A contact has been removed! Refresh table.", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Data on ID: {id} was not deleted.", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK);
-            }
-            finally
-            {
-                conn.Close();
-            }
-
-
+            execute(conn, cmd, "A contact has been removed! Refresh table.", $"Data on ID: {id} was not deleted.");
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
     }
 }
