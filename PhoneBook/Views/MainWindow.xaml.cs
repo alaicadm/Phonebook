@@ -28,7 +28,7 @@ namespace PhoneBook
         private string connectionString;
         public IList<Contact> _contactsList = new List<Contact>();
         private CollectionView view;
-        public MainWindow()
+        public MainWindow() 
         {
             InitializeComponent();
             DataContext = new MainWindowVM(); 
@@ -124,7 +124,7 @@ namespace PhoneBook
                 cmd.CommandType = CommandType.StoredProcedure;
                 string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
                 string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
-                addParams(cmd, @strlist, txtboxVal);
+                addParams(cmd, strlist, txtboxVal);
                 execute(conn,cmd, "A contact has been added! Refresh table.","A contact was not added!");
             }
             else { MessageBox.Show("An empty field was recognized, check your inputs!"); }
@@ -154,7 +154,7 @@ namespace PhoneBook
 
             string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
             string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
-            addParams(cmd, @strlist, txtboxVal);
+            addParams(cmd, strlist, txtboxVal);
             cmd.Parameters.AddWithValue("@userId", id);
 
             bool check = fieldChecker(sender, e);

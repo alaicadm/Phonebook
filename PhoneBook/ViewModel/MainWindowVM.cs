@@ -27,7 +27,7 @@ namespace PhoneBook.ViewModel
 
         private string connectionString;
         private SqlConnection conn;
-        private SqlCommand cmd_fill;
+        private SqlCommand cmd;
         
 
 
@@ -37,11 +37,12 @@ namespace PhoneBook.ViewModel
             //for connection
             connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
             conn = new SqlConnection(connectionString);
-
             conn.Open();
-            cmd_fill = new SqlCommand("usp_read_contact", conn);
-            //SqlDataReader dr = cmd_fill.ExecuteReader();
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd_fill);
+
+            cmd = new SqlCommand("usp_read_contact", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
             adapter.Fill(ds, "Contacts");
 
@@ -67,15 +68,8 @@ namespace PhoneBook.ViewModel
                 }
             }
             catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                
-                conn.Close();
-                
-            }
+            { MessageBox.Show(ex.Message);}
+            finally { conn.Close(); }
             
       
 
@@ -106,73 +100,20 @@ namespace PhoneBook.ViewModel
         
         public void AddMethod(object message)
         {
-
-
-            //Contact c = new Contact();
-            // _contactsList.Add(new Contact { UserId=4, FirstName = c.FirstName, MiddleName = c.MiddleName, LastName = c.LastName, Gender = c.Gender, Mobile = c.Mobile });
-            //Contact contact = new Contact();
-
-            //MessageBox.Show("A contact has been added!", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-            string connectionString;
-            SqlConnection conn;
-            connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
-            conn = new SqlConnection(connectionString);
-
-
-            SqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO " +
-                                "Contacts (FirstName, MiddleName, LastName, Gender, Mobile)" +
-                                "VALUES (@FirstName, @MiddleName, @LastName, @Gender, @Mobile)";
-            cmd.Parameters.AddWithValue("@FirstName", c.FirstName);
-            cmd.Parameters.AddWithValue("@MiddleName", c.MiddleName);
-            cmd.Parameters.AddWithValue("@LastName", c.LastName);
-            cmd.Parameters.AddWithValue("@Gender", c.Gender);
-            cmd.Parameters.AddWithValue("@Mobile", c.Mobile);
-
-
-
-            try
-            {
-                conn.Open();
-                //MessageBox.Show("Connected");
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Data saved successfully");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Data not added");
-            }
-            finally
-            {
-                conn.Close();
-            }
-
+            //execute someting 
         }
 
         public void UpdateMethod(object message)
         {
-            MessageBox.Show("A contact has been updated!", "Phonebook", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            //execute something   
         }
 
        
         
         public void RefreshMethod(object message)
         {
-
-            //(message as TextBox).Text = string.Empty;
-            /*Contact c = new Contact();
-            c.FirstName = "test";
-            c.MiddleName = "test";
-            c.LastName = "test";*/
-
-           
-
-            
+            //execute something   
         }
-
-       
-
-       
 
 
 
