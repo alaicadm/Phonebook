@@ -2,11 +2,11 @@ IF EXISTS (SELECT * FROM SYS.PROCEDURES WHERE NAME = 'usp_add_contact')
 	DROP PROCEDURE dbo.usp_add_contact
 GO
 	CREATE PROCEDURE dbo.usp_add_contact
-		@firstName NVARCHAR(100) = NULL,
-		@middleName NVARCHAR(100) = NULL,
-		@lastName NVARCHAR(100) = NULL,
-		@gender NVARCHAR(50) = NULL,
-		@mobile NVARCHAR(50) = NULL
+		@firstName NVARCHAR(100),
+		@middleName NVARCHAR(100),
+		@lastName NVARCHAR(100),
+		@gender NVARCHAR(50),
+		@mobile NVARCHAR(50)
 	AS 
 	BEGIN
 		SET NOCOUNT ON

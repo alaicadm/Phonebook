@@ -23,18 +23,23 @@ namespace PhoneBook
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window 
     {
         private string connectionString;
         public IList<Contact> _contactsList = new List<Contact>();
+        private CollectionView view;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowVM();
+            DataContext = new MainWindowVM(); 
             connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
+            view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
             view.Filter = ContactFilter;
+            view.SortDescriptions.Add(new SortDescription("UserId", ListSortDirection.Ascending));
+
         }
+
+        
         private bool ContactFilter(object item) //filters contact
         {
             if (String.IsNullOrEmpty(searchContact.Text)) { return true; }
@@ -59,6 +64,7 @@ namespace PhoneBook
             {
                 CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
                 view.Refresh();
+                UserList.SelectedItem = null;
             }
             catch(Exception ex)
             {
@@ -74,7 +80,7 @@ namespace PhoneBook
         }
 
         public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
-        public SqlCommand Command(SqlConnection conn) { return conn.CreateCommand(); }
+        public SqlCommand Command(string sp, SqlConnection conn) { return new SqlCommand(sp, conn); }
 
         public bool fieldChecker(object sender, EventArgs e) //checks if a textbox/combobox is null or not
         {
@@ -101,30 +107,27 @@ namespace PhoneBook
             }
             finally { conn.Close(); }
         }
+
+        public SqlCommand addParams(SqlCommand cmd, String[] strlist, String[] txtboxVal)
+        {
+            for (int i = 0; i < strlist.Length; i++) { cmd.Parameters.AddWithValue(strlist[i], txtboxVal[i]); }
+            return cmd;
+        }
         public void addContact(object sender, EventArgs e)
         {
             bool check = fieldChecker(sender, e);
 
             if (check == true)
             {
-
                 SqlConnection conn = Connect(connectionString);
-                SqlCommand cmd = Command(conn);
-                cmd.CommandText = "INSERT INTO " +
-                                    "Contacts (FirstName, MiddleName, LastName, Gender, Mobile)" +
-                                    "VALUES (@FirstName, @MiddleName, @LastName, @Gender, @Mobile)";
-                cmd.Parameters.AddWithValue("@FirstName", fname.Text);
-                cmd.Parameters.AddWithValue("@MiddleName", mname.Text);
-                cmd.Parameters.AddWithValue("@LastName", lname.Text);
-                cmd.Parameters.AddWithValue("@Gender", gender.Text);
-                cmd.Parameters.AddWithValue("@Mobile", mobile.Text);
-
+                SqlCommand cmd = Command("usp_add_contact", conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
+                string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
+                addParams(cmd, @strlist, txtboxVal);
                 execute(conn,cmd, "A contact has been added! Refresh table.","A contact was not added!");
             }
-            else
-            {
-                MessageBox.Show("An empty field was recognized, check your inputs!");
-            }
+            else { MessageBox.Show("An empty field was recognized, check your inputs!"); }
                 
                
         }
@@ -143,16 +146,16 @@ namespace PhoneBook
         public void updateContact(object sender, EventArgs e) 
         {
             SqlConnection conn = Connect(connectionString);
-            SqlCommand cmd = Command(conn);
+            SqlCommand cmd = Command("usp_update_contact",conn);
+            cmd.CommandType = CommandType.StoredProcedure;
             var selectedRow = UserList.SelectedItem;
             Contact req = selectedRow as Contact;
-            long id = req.UserId;
-            cmd.CommandText = $"UPDATE Contacts SET firstName=@FirstName, middleName=@MiddleName, lastName=@LastName, gender=@Gender, mobile=@Mobile WHERE userId= {id} ";
-            cmd.Parameters.AddWithValue("@FirstName",fname.Text);
-            cmd.Parameters.AddWithValue("@MiddleName", mname.Text);
-            cmd.Parameters.AddWithValue("@LastName", lname.Text);
-            cmd.Parameters.AddWithValue("@Gender", gender.Text);
-            cmd.Parameters.AddWithValue("@Mobile", mobile.Text);
+            int id = req.UserId;
+
+            string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
+            string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
+            addParams(cmd, @strlist, txtboxVal);
+            cmd.Parameters.AddWithValue("@userId", id);
 
             bool check = fieldChecker(sender, e);
             if (check == true) { execute(conn, cmd, "A contact has been updated! Refresh table.", "Contact not updated!"); }
@@ -163,15 +166,17 @@ namespace PhoneBook
         {
 
             SqlConnection conn = Connect(connectionString);
-            SqlCommand cmd = Command(conn);
+            SqlCommand cmd = Command("usp_delete_contact",conn);
+            cmd.CommandType = CommandType.StoredProcedure;
             var selectedRow = UserList.SelectedItem;
             Contact req = selectedRow as Contact;
-            long id = req.UserId;
-            cmd.CommandText = $"DELETE FROM Contacts WHERE userId = {id}";
+            int id = req.UserId;
+            cmd.Parameters.AddWithValue("@userId", id);
             execute(conn, cmd, "A contact has been removed! Refresh table.", $"Data on ID: {id} was not deleted.");
 
         }
 
+       
         
     }
 }

@@ -39,11 +39,12 @@ namespace PhoneBook.ViewModel
             conn = new SqlConnection(connectionString);
 
             conn.Open();
-            cmd_fill = new SqlCommand("SELECT * FROM Contacts", conn);
+            cmd_fill = new SqlCommand("usp_read_contact", conn);
             //SqlDataReader dr = cmd_fill.ExecuteReader();
             SqlDataAdapter adapter = new SqlDataAdapter(cmd_fill);
             DataSet ds = new DataSet();
             adapter.Fill(ds, "Contacts");
+
 
             try
             {
@@ -71,9 +72,9 @@ namespace PhoneBook.ViewModel
             }
             finally
             {
-                adapter.Dispose();
+                
                 conn.Close();
-                conn.Dispose();
+                
             }
             
       
@@ -90,7 +91,11 @@ namespace PhoneBook.ViewModel
         public IList<Contact> Contacts
         {
             get { return _contactsList; }
-            set { _contactsList = value; }
+            set 
+            { 
+                _contactsList = value;
+                OnPropertyChanged("Contacts");
+            }
         }
 
         public bool CanSave

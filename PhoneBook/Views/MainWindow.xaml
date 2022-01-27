@@ -184,7 +184,7 @@
 
                 </StackPanel>
 
-                <ListView x:Name="UserList" Grid.Row="2"  ItemsSource="{Binding Contacts}" 
+                <ListView x:Name="UserList" Grid.Row="2"  ItemsSource="{Binding Contacts, UpdateSourceTrigger=PropertyChanged}" 
                               >
                     <ListView.View>
                         <GridView x:Name="contactsGrid">
