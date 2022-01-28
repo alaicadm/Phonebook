@@ -71,6 +71,8 @@ namespace PhoneBook
 
             foreach (TextBox i in textBoxes) { if (string.IsNullOrEmpty(i.Text)) { res = false; } }
             if (string.IsNullOrEmpty(gender.Text)) { res = false; }
+            int outParse;
+            if (!int.TryParse(mobile.Text, out outParse)) { res = false; }
 
             return res;
 
@@ -110,7 +112,7 @@ namespace PhoneBook
                 execute(conn,cmd, "A contact has been added!","A contact was not added!");
                 load();
             }
-            else { MessageBox.Show("An empty field was recognized, check your inputs!"); }
+            else { MessageBox.Show("An empty/incorrect field was recognized, check your inputs!","FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK); }
            
            
 
@@ -143,6 +145,7 @@ namespace PhoneBook
 
             bool check = fieldChecker(sender, e);
             if (check == true) { execute(conn, cmd, "A contact has been updated!", "Contact not updated!"); }
+            else { MessageBox.Show("An empty/incorrect field was recognized, check your inputs!", "FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK); }
             
             load();
         }
