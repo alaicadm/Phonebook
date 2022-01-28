@@ -70,11 +70,11 @@ namespace PhoneBook.ViewModel
             catch (Exception ex)
             { MessageBox.Show(ex.Message);}
             finally { conn.Close(); }
-            
-      
+
+           
 
             //list of commands 
-           
+
             AddCommand = new RelayCommand(AddMethod, CanSave=>true);
             UpdateCommand = new RelayCommand(UpdateMethod);
             RefreshCommand = new RelayCommand(RefreshMethod);

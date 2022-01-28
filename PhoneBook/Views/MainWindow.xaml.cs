@@ -31,12 +31,14 @@ namespace PhoneBook
         public MainWindow() 
         {
             InitializeComponent();
-            DataContext = new MainWindowVM(); 
+            
+            //DataContext = new MainWindowVM(); 
             connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
+            load();
             view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
             view.Filter = ContactFilter;
             view.SortDescriptions.Add(new SortDescription("UserId", ListSortDirection.Ascending));
-
+      
         }
 
         
@@ -58,26 +60,6 @@ namespace PhoneBook
             CollectionViewSource.GetDefaultView(UserList.ItemsSource).Refresh();
         }
 
-        public void refreshList(object sender, EventArgs e) //currently not working
-        {
-            try
-            {
-                CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
-                view.Refresh();
-                UserList.SelectedItem = null;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                MessageBox.Show("refreshed");
-            }
-            
-            
-
-        }
 
         public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
         public SqlCommand Command(string sp, SqlConnection conn) { return new SqlCommand(sp, conn); }
@@ -125,11 +107,13 @@ namespace PhoneBook
                 string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
                 string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
                 addParams(cmd, strlist, txtboxVal);
-                execute(conn,cmd, "A contact has been added! Refresh table.","A contact was not added!");
+                execute(conn,cmd, "A contact has been added!","A contact was not added!");
+                load();
             }
             else { MessageBox.Show("An empty field was recognized, check your inputs!"); }
-                
-               
+           
+           
+
         }
 
         public void refreshOnClick(object sender, EventArgs e) //to refresh textboxes and unselect the select item on listview 
@@ -158,8 +142,9 @@ namespace PhoneBook
             cmd.Parameters.AddWithValue("@userId", id);
 
             bool check = fieldChecker(sender, e);
-            if (check == true) { execute(conn, cmd, "A contact has been updated! Refresh table.", "Contact not updated!"); }
-
+            if (check == true) { execute(conn, cmd, "A contact has been updated!", "Contact not updated!"); }
+            
+            load();
         }
 
         public void deleteContact(object sender, EventArgs e)
@@ -172,7 +157,54 @@ namespace PhoneBook
             Contact req = selectedRow as Contact;
             int id = req.UserId;
             cmd.Parameters.AddWithValue("@userId", id);
-            execute(conn, cmd, "A contact has been removed! Refresh table.", $"Data on ID: {id} was not deleted.");
+            execute(conn, cmd, "A contact has been removed!", $"Data on ID: {id} was not deleted.");
+            //UserList.ItemsSource = null;
+            load();
+
+        }
+
+        public void load()
+        {
+           
+            SqlConnection conn = Connect(connectionString);
+            SqlCommand cmd = Command("usp_read_contact", conn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            adapter.Fill(ds, "Contacts");
+
+            try
+            {
+                if (_contactsList != null)
+                {
+                    _contactsList.Clear();
+                    foreach (DataRow dataRow in ds.Tables[0].Rows)
+                    {
+                        _contactsList.Add(new Contact
+                        {
+                            UserId = (int)dataRow["UserId"],
+                            FirstName = dataRow["FirstName"].ToString(),
+                            MiddleName = dataRow["MiddleName"].ToString(),
+                            LastName = dataRow["LastName"].ToString(),
+                            Gender = dataRow["Gender"].ToString(),
+                            Mobile = dataRow["Mobile"].ToString()
+
+                        });
+                    }
+
+                }
+               
+                
+
+            }
+            catch (Exception ex)
+            { MessageBox.Show(ex.Message); }
+            finally { conn.Close(); }
+
+            UserList.ItemsSource = _contactsList;
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
+            view.Refresh();
+            
 
         }
 
