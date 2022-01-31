@@ -1,0 +1,47 @@
+﻿<Window x:Class="PhoneBook.Views.FAQs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhoneBook.Views"
+        mc:Ignorable="d"
+        Title="FAQs" Height="198" Width="400" ResizeMode="NoResize" 
+        WindowState="Normal" Icon="Assets/phonebook-icon.ico"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <Grid>
+
+        <materialDesign:Card Padding="0"  Background="white" >
+
+            <TabControl
+            Height="191"
+            TabStripPlacement="Left" RenderTransformOrigin="0.491,0.505" VerticalAlignment="Top">
+                <TabItem
+                    Header="1" Height="23" Margin="-2,0,0,-2" VerticalAlignment="Bottom">
+                    <TextBlock
+                    Margin="8"
+                    Width="353" ><Run Text="How duplicate records are dealt?"/><LineBreak/><Run/><LineBreak/><Run Text="Adding or updating with a duplicate record cannot "/><LineBreak/><Run Text="be performed."/></TextBlock>
+                </TabItem>
+                <TabItem
+                    Header="2" Height="23" Margin="-2,0,0,-2" VerticalAlignment="Bottom">
+                    <TextBlock
+                    Margin="8"
+                    ><Run Text="How can I distinguish the buttons since they don't have "/><LineBreak/><Run Text="any label?"/><LineBreak/><Run/><LineBreak/><Run Text="If you are having a difficulty interpreting them graphically, "/><LineBreak/><Run Text="just hover on each of them to determine their intended"/><LineBreak/><Run Text="functionalities. "/></TextBlock>
+                </TabItem>
+                <TabItem
+                    Header="3" Height="23" Margin="-2,0,0,-2" VerticalAlignment="Bottom">
+                    <TextBlock
+                    Margin="8"
+                    ><Run Text="What is a &quot;Refresh Fields&quot; button?"/><LineBreak/><Run/><LineBreak/><Run Text="Clicking this button will refresh the fields so you don't need"/><LineBreak/><Run Text="to individually empty them. It will also remove the focus on"/><LineBreak/><Run Text="a hovered item on the table."/></TextBlock>
+                </TabItem>
+            </TabControl>
+
+        </materialDesign:Card>
+    </Grid>
+</Window>

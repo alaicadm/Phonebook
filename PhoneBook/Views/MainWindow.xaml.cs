@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Data.SqlClient;
 using System.Data;
 using System.ComponentModel;
+using PhoneBook.Views;
 
 namespace PhoneBook
 {
@@ -208,7 +209,12 @@ namespace PhoneBook
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
             view.Refresh();
             
+        }
 
+        public void helpOnClick(object sender, EventArgs e)
+        {
+            FAQs helpWindow = new FAQs();
+            helpWindow.Show();
         }
 
        

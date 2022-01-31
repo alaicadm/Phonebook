@@ -27,3 +27,5 @@ D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.xml
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\bin\Debug\EntityFramework.SqlServer.xml
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook_Content.g.cs
 D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\Views\FAQs.g.cs
+D:\Users\reube\source\repos\PhoneBook\PhoneBook\obj\Debug\Views\FAQs.baml

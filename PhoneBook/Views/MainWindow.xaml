@@ -139,13 +139,15 @@
             </Grid>
         </materialDesign:Card>
 
-        <materialDesign:Card Padding="30" x:Name="ContactLists" Background="white" Grid.Column="1">
+        <materialDesign:Card Padding="30" x:Name="ContactLists" Background="white" Grid.Column="1" >
 
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="60"/>
-                    <RowDefinition/>
+                    
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
 
                 </Grid.RowDefinitions>
 
@@ -158,6 +160,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
       
                         </Grid.ColumnDefinitions>
 
@@ -171,8 +174,15 @@
                         ToolTip="Search for a Contact"
                         materialDesign:HintAssist.Hint="Search Contact" />
 
-                        
-                        
+                        <Button Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="47" Width="47"
+                        materialDesign:ButtonAssist.CornerRadius="25"  ToolTip="HELP"  HorizontalAlignment="Center"
+                        Click="helpOnClick"
+                         IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                            <materialDesign:PackIcon Kind="Help" />
+                        </Button>
+
+
+
 
                     </Grid>
 
@@ -191,6 +201,9 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
+
+                
+                
 
 
 
