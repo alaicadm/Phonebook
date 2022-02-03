@@ -18,206 +18,39 @@ using System.Data.SqlClient;
 using System.Data;
 using System.ComponentModel;
 using PhoneBook.Views;
+using PhoneBook.Controller;
 
 namespace PhoneBook
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    
     public partial class MainWindow : Window 
     {
-        private string connectionString;
-        public IList<Contact> _contactsList = new List<Contact>();
-        private CollectionView view;
+        
+        public CommandController cc = new CommandController();
+        public DBController dbcon = new DBController();
+        public Helpers h = new Helpers();
+        public CollectionView view;
+
         public MainWindow() 
         {
             InitializeComponent();
+
             
-            //DataContext = new MainWindowVM(); 
-            connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
-            load();
-            view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
-            view.Filter = ContactFilter;
+            dbcon.load();
+            view = (CollectionView)CollectionViewSource.GetDefaultView(h.initLV().ItemsSource);
+            view.Filter = cc.ContactFilter;
             view.SortDescriptions.Add(new SortDescription("UserId", ListSortDirection.Ascending));
-      
-        }
-
-        
-        private bool ContactFilter(object item) //filters contact
-        {
-            if (String.IsNullOrEmpty(searchContact.Text)) { return true; }
-            else { 
-                return ((item as Contact).FirstName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).MiddleName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).LastName.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).Mobile.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).Gender.IndexOf(searchContact.Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    );
-            }
-        }
-
-        private void searchContact_txtChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            CollectionViewSource.GetDefaultView(UserList.ItemsSource).Refresh();
-        }
-
-
-        public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
-        public SqlCommand Command(string sp, SqlConnection conn) { return new SqlCommand(sp, conn); }
-
-        public bool fieldChecker(object sender, EventArgs e) //checks if a textbox/combobox is null or not
-        {
-            bool res = true;
-            TextBox[] textBoxes = { fname, mname, lname, mobile };
-
-            foreach (TextBox i in textBoxes) { if (string.IsNullOrEmpty(i.Text)) { res = false; } }
-            if (string.IsNullOrEmpty(gender.Text)) { res = false; }
-            int outParse;
-            if (!int.TryParse(mobile.Text, out outParse)) { res = false; }
-
-            return res;
-
-        }
-        public void execute(SqlConnection conn, SqlCommand cmd, string successMessage, string failedMessage) //execute connection and command
-        {
-            try
-            {
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                MessageBox.Show(successMessage, "SUCCESS", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(failedMessage, "FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
-            }
-            finally { conn.Close(); }
-        }
-
-        public SqlCommand addParams(SqlCommand cmd, String[] strlist, String[] txtboxVal)
-        {
-            for (int i = 0; i < strlist.Length; i++) { cmd.Parameters.AddWithValue(strlist[i], txtboxVal[i]); }
-            return cmd;
-        }
-        public void addContact(object sender, EventArgs e)
-        {
-            bool check = fieldChecker(sender, e);
-
-            if (check == true)
-            {
-                SqlConnection conn = Connect(connectionString);
-                SqlCommand cmd = Command("usp_add_contact", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
-                string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
-                addParams(cmd, strlist, txtboxVal);
-                execute(conn,cmd, "A contact has been added!","A contact was not added!");
-                load();
-            }
-            else { MessageBox.Show("An empty/incorrect field was recognized, check your inputs!","FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK); }
-           
-           
 
         }
 
-        public void refreshOnClick(object sender, EventArgs e) //to refresh textboxes and unselect the select item on listview 
-        {
-            UserList.SelectedItem = null;
-            fname.Clear();
-            mname.Clear();
-            lname.Clear();
-            gender.SelectedIndex = -1;
-            mobile.Clear();
-            
-        }
+        //onclicks
+        public void addContact(object sender, EventArgs e) { cc.addContact(sender, e); }
+        public void updateContact(object sender, EventArgs e) { cc.updateContact(sender, e); }
+        public void deleteContact(object sender, EventArgs e) { cc.deleteContact(sender, e); }
+        public void refreshOnClick(object sender, EventArgs e) { cc.refreshOnClick(sender, e); }
+        public void searchContact_txtChanged(object sender, TextChangedEventArgs e) { cc.searchContact_txtChanged(sender, e); }
+        public void helpOnClick(object sender, EventArgs e) { cc.helpOnClick(sender, e); }
 
-        public void updateContact(object sender, EventArgs e) 
-        {
-            SqlConnection conn = Connect(connectionString);
-            SqlCommand cmd = Command("usp_update_contact",conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            var selectedRow = UserList.SelectedItem;
-            Contact req = selectedRow as Contact;
-            int id = req.UserId;
 
-            string[] strlist = { "@firstName", "@middleName", "@lastName","@gender", "@mobile" };
-            string[] txtboxVal = { fname.Text, mname.Text, lname.Text, gender.Text, mobile.Text };
-            addParams(cmd, strlist, txtboxVal);
-            cmd.Parameters.AddWithValue("@userId", id);
-
-            bool check = fieldChecker(sender, e);
-            if (check == true) { execute(conn, cmd, "A contact has been updated!", "Contact not updated!"); }
-            else { MessageBox.Show("An empty/incorrect field was recognized, check your inputs!", "FAILED", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK); }
-            
-            load();
-        }
-
-        public void deleteContact(object sender, EventArgs e)
-        {
-
-            SqlConnection conn = Connect(connectionString);
-            SqlCommand cmd = Command("usp_delete_contact",conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            var selectedRow = UserList.SelectedItem;
-            Contact req = selectedRow as Contact;
-            int id = req.UserId;
-            cmd.Parameters.AddWithValue("@userId", id);
-            execute(conn, cmd, "A contact has been removed!", $"Data on ID: {id} was not deleted.");
-            //UserList.ItemsSource = null;
-            load();
-
-        }
-
-        public void load()
-        {
-           
-            SqlConnection conn = Connect(connectionString);
-            SqlCommand cmd = Command("usp_read_contact", conn);
-            cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataSet ds = new DataSet();
-            adapter.Fill(ds, "Contacts");
-
-            try
-            {
-                if (_contactsList != null)
-                {
-                    _contactsList.Clear();
-                    foreach (DataRow dataRow in ds.Tables[0].Rows)
-                    {
-                        _contactsList.Add(new Contact
-                        {
-                            UserId = (int)dataRow["UserId"],
-                            FirstName = dataRow["FirstName"].ToString(),
-                            MiddleName = dataRow["MiddleName"].ToString(),
-                            LastName = dataRow["LastName"].ToString(),
-                            Gender = dataRow["Gender"].ToString(),
-                            Mobile = dataRow["Mobile"].ToString()
-
-                        });
-                    }
-
-                }
-               
-                
-
-            }
-            catch (Exception ex)
-            { MessageBox.Show(ex.Message); }
-            finally { conn.Close(); }
-
-            UserList.ItemsSource = _contactsList;
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(UserList.ItemsSource);
-            view.Refresh();
-            
-        }
-
-        public void helpOnClick(object sender, EventArgs e)
-        {
-            FAQs helpWindow = new FAQs();
-            helpWindow.Show();
-        }
-
-       
-        
     }
 }
