@@ -1,0 +1,100 @@
+﻿<Window x:Class="PhoneBook.Views.ConnectDB"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:PhoneBook.Views" 
+        mc:Ignorable="d"
+        Title="ConnectDB" Height="550" Width="400">
+    <Grid>
+        <materialDesign:Card x:Name="ContactFields" Padding="30"  Background="white" Grid.Row="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Grid.Row="1" Text="{Binding SelectedItem.MiddleName, ElementName=UserList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Top" x:Name="sname"
+                        Height="50"
+                        TextWrapping="Wrap"
+                        materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
+                        VerticalScrollBarVisibility="Auto"
+                        ToolTip="Enter Server Name"
+                        materialDesign:HintAssist.Hint="Server Name" />
+                <TextBox Grid.Row="2" Text="{Binding SelectedItem.MiddleName, ElementName=UserList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Top" x:Name="dbname"
+                        Height="50"
+                        TextWrapping="Wrap"
+                        materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
+                        VerticalScrollBarVisibility="Auto"
+                        ToolTip="Enter Database Name"
+                        materialDesign:HintAssist.Hint="Database Name" />
+                <TextBox Grid.Row="3" Text="{Binding SelectedItem.MiddleName, ElementName=UserList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        VerticalAlignment="Top" x:Name="dbuname"
+                        Height="50"
+                        TextWrapping="Wrap"
+                        materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding IsChecked, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox}"
+                        VerticalScrollBarVisibility="Auto"
+                        ToolTip="Enter Username"
+                        materialDesign:HintAssist.Hint="Username" />
+                <PasswordBox
+                        Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
+                        VerticalAlignment="Top" Grid.Row="4" x:Name="dbpass"
+                        IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedPasswordBoxEnabledComboBox}"
+                        materialDesign:HintAssist.Hint="Password" />
+                <StackPanel Grid.Row="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0"
+                            x:Name="ComboBox1"
+                            Content="Integrated Security" />
+                        <CheckBox Grid.Column="1"
+                            x:Name="ComboBox2"
+                            Content="Encryption" />
+                    </Grid>
+                </StackPanel>
+                <StackPanel Grid.Row="6">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="10,0,0,0" Grid.Column="0" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="100"
+                        materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Add Contact"  HorizontalAlignment="Center"
+                        Click="onClickConnect"
+                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                            <TextBlock>Connect</TextBlock>
+                        </Button>
+                        <Button Margin="10,0,0,0" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedLightButton}"  Height="50" Width="100"
+                        materialDesign:ButtonAssist.CornerRadius="5"  ToolTip="Add Contact"  HorizontalAlignment="Center"
+                       
+                        IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                            <TextBlock>Refresh</TextBlock>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+
+                <Image x:Name="image" Grid.Row="0" Margin="120,10,120,10" Width="100" d:LayoutOverrides="HorizontalAlignment" Source="/Views/dbicon.png"/>
+
+
+
+
+
+            </Grid>
+        </materialDesign:Card>
+    </Grid>
+</Window>

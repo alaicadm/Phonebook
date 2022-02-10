@@ -35,6 +35,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    
                 </Grid.RowDefinitions>
 
 
@@ -135,6 +136,8 @@
 
                     </Grid>
                 </StackPanel>
+
+                
 
             </Grid>
         </materialDesign:Card>

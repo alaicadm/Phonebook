@@ -8,10 +8,10 @@ GO
 		@gender NVARCHAR(50),
 		@mobile NVARCHAR(50)
 	AS
-	BEGIN
+	BEGIN TRY
 		IF NOT EXISTS (SELECT * FROM Contacts WHERE firstName = @firstName and 
 		middleName = @middleName and lastName = @lastName and gender = @gender and mobile = @mobile)
-			BEGIN
+			BEGIN TRANSACTION
 				SET NOCOUNT ON
 				INSERT INTO dbo.Contacts 
 				(
@@ -29,6 +29,9 @@ GO
 					@gender,
 					@mobile
 				)
-			END
-	END
+			COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION
+	END CATCH
 GO

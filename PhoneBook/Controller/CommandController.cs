@@ -20,9 +20,15 @@ namespace PhoneBook.Controller
         public CollectionView view;
         public CommandController()
         {
-       
+            //MainWindow mainWindow = new MainWindow();
+            //mainWindow.Show();
         }
 
+        public void OpenWindow(object sender, EventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
         public bool ContactFilter(object item) //filters contact
         {
             if (String.IsNullOrEmpty(h.search().Text)) { return true; }

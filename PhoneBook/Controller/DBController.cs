@@ -15,14 +15,31 @@ namespace PhoneBook.Controller
     
     public class DBController : Contact
     {
+        private string sname;
+        private string dbname;
+        private string dbuname;
+        private string dbpass;
+
         public string connectionString;
         public IList<Contact> _contactsList = new List<Contact>();
         public Helpers e = new Helpers();
 
+        //public SqlConnectionStringBuilder connectionString;
+
+        //public string UserId { get { return userId; } set { userId = value; OnPropertyChanged("UserId"); } }
+        public string ServerName { get { return this.sname; } set { this.sname = value; } }
+        public string DbName { get { return this.dbname; } set { this.dbname = value; } }
+        public string UserName { get { return this.dbuname; } set { this.dbuname = value; } }
+        public string Password { get { return this.dbpass; } set { this.dbpass = value; } }
+
         public DBController()
         {
-            connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
+    
+            connectionString = @"Data Source="+sname+"; Initial Catalog ="+dbname+"; User Id = "+dbuname+";Password = "+dbpass+"; Integrated Security=True";
+            //test2x lng
+            //connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
         }
+        
 
         public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
         public SqlCommand Command(string sp, SqlConnection conn) { return new SqlCommand(sp, conn); }
@@ -30,7 +47,7 @@ namespace PhoneBook.Controller
 
         public void load()
         {
-
+            MessageBox.Show(connectionString);
             SqlConnection conn = Connect(connectionString);
             SqlCommand cmd = Command("usp_read_contact", conn);
             cmd.CommandType = CommandType.StoredProcedure;

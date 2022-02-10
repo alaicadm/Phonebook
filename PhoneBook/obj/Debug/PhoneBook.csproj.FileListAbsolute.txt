@@ -60,3 +60,5 @@ D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.csproj.Co
 D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.csproj.CopyComplete
 D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.exe
 D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\PhoneBook.pdb
+D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\Views\ConnectDB.g.cs
+D:\Users\reube\source\vs-repos\PhoneBook\PhoneBook\obj\Debug\Views\ConnectDB.baml

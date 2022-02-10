@@ -71,6 +71,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\ConnectDB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FAQs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,6 +94,9 @@
     <Compile Include="ViewModel\MainWindowVM.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="Views\ConnectDB.xaml.cs">
+      <DependentUpon>ConnectDB.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FAQs.xaml.cs">
       <DependentUpon>FAQs.xaml</DependentUpon>
     </Compile>
@@ -136,6 +143,8 @@
     <Content Include="SQL\usp_delete_contact.sql" />
     <Content Include="SQL\usp_read_contact.sql" />
     <Content Include="SQL\usp_update_contact.sql" />
+    <Resource Include="Views\dbicon.png" />
+    <Resource Include="Views\Assets\dbicon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.3.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.3.0\build\MaterialDesignThemes.targets')" />
