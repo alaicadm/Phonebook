@@ -24,11 +24,14 @@ namespace PhoneBook.Controller
             //mainWindow.Show();
         }
 
-        public void OpenWindow(object sender, EventArgs e)
+        /*public void OpenWindow(object sender, EventArgs e)
         {
+            //ConnectDB cndb = new ConnectDB();
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
-        }
+        }*/
+
+
         public bool ContactFilter(object item) //filters contact
         {
             if (String.IsNullOrEmpty(h.search().Text)) { return true; }

@@ -20,21 +20,28 @@ namespace PhoneBook.Views
     /// </summary>
     public partial class ConnectDB : Window
     {
-        CommandController cmc = new CommandController();
+        //public CommandController cmc = new CommandController();
+        //public DBController dbc = new DBController();
+       
         public ConnectDB()
         {
             InitializeComponent();
             
         }
+
+  
         public void onClickConnect(object item, EventArgs e)
         {
-            DBController dbc = new DBController();
+            DBController dbc= new DBController();
             dbc.ServerName = sname.Text;
             dbc.DbName = dbname.Text;
             dbc.UserName = dbuname.Text;
             dbc.Password = dbpass.Password;
-            cmc.OpenWindow(item, e);
            
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
         }
+       
     }
 }
