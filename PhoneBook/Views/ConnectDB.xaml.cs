@@ -22,21 +22,26 @@ namespace PhoneBook.Views
     {
         //public CommandController cmc = new CommandController();
         //public DBController dbc = new DBController();
-       
+        //DBController dbc = new DBController();  //runs directly if instantiated here.. if on the method there's something wrong
+        //MainWindow mainWindow = new MainWindow();
+        //Helpers h = new Helpers();
+
         public ConnectDB()
         {
+
             InitializeComponent();
             
         }
 
   
         public void onClickConnect(object item, EventArgs e)
-        {
-            DBController dbc= new DBController();
-            dbc.ServerName = sname.Text;
-            dbc.DbName = dbname.Text;
-            dbc.UserName = dbuname.Text;
-            dbc.Password = dbpass.Password;
+        {         
+           
+            DBController.ServerName = sname.Text;
+            DBController.DbName = dbname.Text;
+            DBController.UserName = dbuname.Text;
+            DBController.Password = dbpass.Password;
+
            
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();

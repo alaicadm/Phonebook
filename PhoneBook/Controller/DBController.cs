@@ -17,48 +17,43 @@ namespace PhoneBook.Controller
     public class DBController : Contact
     {
 
-        private string sname;
-        private string dbname;
-        private string dbuname;
-        private string dbpass;
+        private static string sname;
+        private static string dbname;
+        private static string dbuname;
+        private static string dbpass;
 
-        //public SqlConnectionStringBuilder connectionString;
+        public static string ServerName { get { return sname; } set { sname = value; } }
+        public static string DbName { get { return dbname; } set { dbname = value; } }
+        public static string UserName { get { return dbuname; } set { dbuname = value; } }
+        public static string Password { get { return dbpass; } set { dbpass = value; } }
 
-        public string ServerName { get { return sname; } set { sname = value; } }
-        public string DbName { get { return dbname; } set { dbname = value; } }
-        public string UserName { get { return dbuname; } set { dbuname = value; } }
-        public string Password { get { return dbpass; } set { dbpass = value; } }
-
-        //public static ConnectDB cs = new ConnectDB();
-        public string connectionString;
         public IList<Contact> _contactsList = new List<Contact>();
-        public Helpers e = new Helpers();
+        public static Helpers Helpers = new Helpers();
 
-        public DBController()
-        {   
-            connectionString = @"Data Source="+sname+"; Initial Catalog ="+dbname+"; User Id = "+dbuname+";Password = "+dbpass+"; Integrated Security=True";
-            //test2x lng
-            /*if (sname != null)
-            {
-                MessageBox.Show("not null");
-            }
-            else
-            {
-                MessageBox.Show("its null");
-            }*/
-
-            //connectionString = @"Data Source=localhost; Initial Catalog = Phonebook; Integrated Security=True";
-        }
         
+        public DBController()
+        {
 
-        public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); }
+        }
+
+
+        public static string ConnString()
+        {
+            ServerName = "localhost";
+            DbName = "Phonebook";
+            UserName = "sa_pb";
+            Password = "alaicadm";
+            return @"Data Source=" + ServerName + "; Initial Catalog =" + DbName + "; User Id = " + UserName + ";Password = " + Password + "; Integrated Security=True";
+        }
+
+        public SqlConnection Connect(string connectionString) { return new SqlConnection(connectionString); } 
         public SqlCommand Command(string sp, SqlConnection conn) { return new SqlCommand(sp, conn); }
 
 
         public void load()
         {
             
-            SqlConnection conn = Connect(connectionString);
+            SqlConnection conn = Connect(ConnString());
             SqlCommand cmd = Command("usp_read_contact", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             SqlDataAdapter adapter = new SqlDataAdapter(cmd);
@@ -93,11 +88,9 @@ namespace PhoneBook.Controller
             { MessageBox.Show(ex.Message); }
             finally { conn.Close(); }
 
-
-   
-            e.initLV().ItemsSource = _contactsList;
-            
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(e.initLV().ItemsSource);
+            //fill the listview with contacts list
+            Helpers.initLV().ItemsSource = _contactsList;
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Helpers.initLV().ItemsSource);
             view.Refresh();
 
         }
@@ -107,11 +100,11 @@ namespace PhoneBook.Controller
         public void insert()
         {
            
-            SqlConnection conn = Connect(connectionString);
+            SqlConnection conn = Connect(ConnString());
             SqlCommand cmd = Command("usp_add_contact", conn);
             cmd.CommandType = CommandType.StoredProcedure;
             string[] strlist = { "@firstName", "@middleName", "@lastName", "@gender", "@mobile" };
-            string[] txtboxVal = { e.initTB()[0].Text, e.initTB()[1].Text, e.initTB()[2].Text, e.initCB().Text, e.initTB()[3].Text };
+            string[] txtboxVal = { Helpers.initTB()[0].Text, Helpers.initTB()[1].Text, Helpers.initTB()[2].Text, Helpers.initCB().Text, Helpers.initTB()[3].Text };
             addParams(cmd, strlist, txtboxVal);
             execute(conn, cmd, "A contact has been added!", "A contact was not added!");
             load();
@@ -120,15 +113,14 @@ namespace PhoneBook.Controller
         public void update()
         {
            
-            SqlConnection conn = Connect(connectionString);
+            SqlConnection conn = Connect(ConnString());
             SqlCommand cmd = Command("usp_update_contact", conn);
             cmd.CommandType = CommandType.StoredProcedure;
-            var selectedRow = e.initLV().SelectedItem;
+            var selectedRow = Helpers.initLV().SelectedItem;
             Contact req = selectedRow as Contact;
             int id = req.UserId;
-
             string[] strlist = { "@firstName", "@middleName", "@lastName", "@gender", "@mobile" };
-            string[] txtboxVal = { e.initTB()[0].Text, e.initTB()[1].Text, e.initTB()[2].Text, e.initCB().Text, e.initTB()[3].Text };
+            string[] txtboxVal = { Helpers.initTB()[0].Text, Helpers.initTB()[1].Text, Helpers.initTB()[2].Text, Helpers.initCB().Text, Helpers.initTB()[3].Text };
             addParams(cmd, strlist, txtboxVal);
             cmd.Parameters.AddWithValue("@userId", id);
             execute(conn, cmd, "A contact has been updated!", "A contact was not apdated!");
@@ -139,10 +131,10 @@ namespace PhoneBook.Controller
         public void delete()
         {
            
-            SqlConnection conn = Connect(connectionString);
+            SqlConnection conn = Connect(ConnString());
             SqlCommand cmd = Command("usp_delete_contact", conn);
             cmd.CommandType = CommandType.StoredProcedure;
-            var selectedRow = e.initLV().SelectedItem;
+            var selectedRow = Helpers.initLV().SelectedItem;
             Contact req = selectedRow as Contact;
             int id = req.UserId;
             cmd.Parameters.AddWithValue("@userId", id);
@@ -150,12 +142,14 @@ namespace PhoneBook.Controller
             load();
         }
 
+        //to add parameters
         public SqlCommand addParams(SqlCommand cmd, String[] strlist, String[] txtboxVal)
         {
             for (int i = 0; i < strlist.Length; i++) { cmd.Parameters.AddWithValue(strlist[i], txtboxVal[i]); }
             return cmd;
         }
 
+        //to execute connection and commands
         public void execute(SqlConnection conn, SqlCommand cmd, string successMessage, string failedMessage) //execute connection and command
         {
             try

@@ -28,16 +28,18 @@ namespace PhoneBook
         
         public CommandController cc = new CommandController();
         public DBController dbcon = new DBController();
-        public Helpers h = new Helpers();
+        public Helpers Helpers = new Helpers();
         public CollectionView view;
 
         public MainWindow() 
         {
             InitializeComponent();
-
-            
+            //this.dbcon = dbcon;
+            //MessageBox.Show(dbcon.ServerName);
+            //MessageBox.Show("v2: "+DBControllerV2.ServerName);
             dbcon.load();
-            view = (CollectionView)CollectionViewSource.GetDefaultView(h.initLV().ItemsSource);
+            //view = (CollectionView)CollectionViewSource.GetDefaultView(Helpers.initLV().ItemsSource);
+            view = (CollectionView)CollectionViewSource.GetDefaultView(Helpers.initLV().ItemsSource);
             view.Filter = cc.ContactFilter;
             view.SortDescriptions.Add(new SortDescription("UserId", ListSortDirection.Ascending));
 

@@ -89,6 +89,7 @@
     </Compile>
     <Compile Include="Controller\CommandController.cs" />
     <Compile Include="Controller\DBController.cs" />
+    <Compile Include="Controller\DBControllerV2.cs" />
     <Compile Include="Controller\Helpers.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="ViewModel\MainWindowVM.cs" />

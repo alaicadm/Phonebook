@@ -16,7 +16,7 @@ namespace PhoneBook.Controller
     public class CommandController
     {
         public DBController dbcon = new DBController();
-        public Helpers h = new Helpers();
+        public Helpers Helpers = new Helpers();
         public CollectionView view;
         public CommandController()
         {
@@ -34,35 +34,35 @@ namespace PhoneBook.Controller
 
         public bool ContactFilter(object item) //filters contact
         {
-            if (String.IsNullOrEmpty(h.search().Text)) { return true; }
+            if (String.IsNullOrEmpty(Helpers.search().Text)) { return true; }
             else
             {
-                return ((item as Contact).FirstName.IndexOf(h.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).MiddleName.IndexOf(h.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).LastName.IndexOf(h.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).Mobile.IndexOf(h.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
-                    || (item as Contact).Gender.IndexOf(h.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
+                return ((item as Contact).FirstName.IndexOf(Helpers.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).MiddleName.IndexOf(Helpers.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).LastName.IndexOf(Helpers.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).Mobile.IndexOf(Helpers.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
+                    || (item as Contact).Gender.IndexOf(Helpers.search().Text, StringComparison.OrdinalIgnoreCase) >= 0
                     );
             }
         }
 
         public void searchContact_txtChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            CollectionViewSource.GetDefaultView(h.initLV().ItemsSource).Refresh();
+            CollectionViewSource.GetDefaultView(Helpers.initLV().ItemsSource).Refresh();
         }
 
         public bool fieldChecker(object sender, EventArgs e) //checks if a textbox/combobox is null or not
         {
             bool res = true;
             
-            TextBox[] textBoxes = { h.initTB()[0], h.initTB()[1], h.initTB()[2], h.initTB()[3] };
+            TextBox[] textBoxes = { Helpers.initTB()[0], Helpers.initTB()[1], Helpers.initTB()[2], Helpers.initTB()[3] };
 
-            ComboBox gender = h.initCB();
+            ComboBox gender = Helpers.initCB();
             
             foreach (TextBox i in textBoxes) { if (string.IsNullOrEmpty(i.Text)) { res = false; } }
             if (string.IsNullOrEmpty(gender.Text)) { res = false; }
             int outParse;
-            if (!int.TryParse(h.initTB()[3].Text, out outParse)) { res = false; }
+            if (!int.TryParse(Helpers.initTB()[3].Text, out outParse)) { res = false; }
 
             return res;
 
@@ -70,12 +70,12 @@ namespace PhoneBook.Controller
 
         public void refreshOnClick(object sender, EventArgs e) //to refresh textboxes and unselect the select item on listview 
         {
-            h.initLV().SelectedItem = null;
-            h.initTB()[0].Clear();
-            h.initTB()[1].Clear();
-            h.initTB()[2].Clear();
-            h.initCB().SelectedIndex = -1;
-            h.initTB()[3].Clear();
+            Helpers.initLV().SelectedItem = null;
+            Helpers.initTB()[0].Clear();
+            Helpers.initTB()[1].Clear();
+            Helpers.initTB()[2].Clear();
+            Helpers.initCB().SelectedIndex = -1;
+            Helpers.initTB()[3].Clear();
 
         }
 

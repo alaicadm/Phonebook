@@ -36,7 +36,7 @@ namespace PhoneBook.Controller
             return (Application.Current.MainWindow as MainWindow).UserList;
         }
 
-        public TextBox search()
+        public   TextBox search()
         {
             return (Application.Current.MainWindow as MainWindow).searchContact;
         }
